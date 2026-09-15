@@ -46,4 +46,4 @@ references/
 
 ## 许可
 
-仅供学习与自用，按需取用。
+MIT License，见 [LICENSE](LICENSE)。
