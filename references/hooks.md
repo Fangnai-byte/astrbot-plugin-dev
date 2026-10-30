@@ -3,14 +3,14 @@
 依据本机 AstrBot 4.28.0（`astrbot/core/astr_agent_hooks.py`、`core/star/star_manager.py`、
 `core/platform/manager.py`、`core/core_lifecycle.py`、`core/pipeline/process_stage/method/star_request.py`）。
 
-统一约定：钩子写在 `Star` 子类里，签名 = `(self, event, *额外参数)`。
+统一约定是这样，钩子写在 `Star` 子类里，签名 = `(self, event, *额外参数)`。
 `call_event_hook` 用 `await handler.handler(event, *args)` 调用，参数个数必须完全匹配，
 否则运行期 TypeError（会在日志里以 traceback 形式出现）。
 
-注意类归属：`astrbot/core/astr_agent_hooks.py` 的 `MainAgentHooks` 只有 4 个方法
+注意类归属。`astrbot/core/astr_agent_hooks.py` 的 `MainAgentHooks` 只有 4 个方法
 （`on_agent_begin`、`on_agent_done`、`on_tool_start`、`on_tool_end`），`on_llm_request` 的调用点
 不在这里，而在 `core/pipeline/process_stage/method/agent_sub_stages/internal.py` 与
-`.../agent_sub_stages/third_party.py`。本机签名：`on_llm_request(self, event, req)`、
+`.../agent_sub_stages/third_party.py`。本机签名是 `on_llm_request(self, event, req)`、
 `on_llm_response(self, event, llm_response)`；`on_plugin_error` 为 4 个额外参数
 （`plugin_name`、`handler_name`、`error`、`traceback_text`，连 `event` 共 5 参）。
 照表核对，参数个数不符会在运行期报 TypeError。
@@ -36,7 +36,7 @@
 | `async def after_message_sent(self, event)` | 消息发送后 | 无额外 |
 | `async def on_plugin_error(self, event, plugin_name, handler_name, error, traceback_text)` | 事件处理器抛异常时 | 4 个额外参数，注意版本差异 |
 
-`EventType` 在 4.28.0 共 **16** 个成员：`OnAstrBotLoadedEvent`、`OnPlatformLoadedEvent`、
+`EventType` 在 4.28.0 共 16 个成员，分别是 `OnAstrBotLoadedEvent`、`OnPlatformLoadedEvent`、
 `AdapterMessageEvent`、`OnWaitingLLMRequestEvent`、`OnLLMRequestEvent`、`OnLLMResponseEvent`、
 `OnAgentBeginEvent`、`OnAgentDoneEvent`、`OnDecoratingResultEvent`、`OnCallingFuncToolEvent`、
 `OnUsingLLMToolEvent`、`OnLLMToolRespondEvent`、`OnAfterMessageSentEvent`、`OnPluginErrorEvent`、
@@ -52,7 +52,7 @@ if await call_event_hook(event, EventType.OnLLMRequestEvent, req):
 ```
 
 `call_event_hook` 在钩子执行完检查 `event.is_stopped()`，为真则返回 True。
-所以**在钩子里调用 `event.stop_event()`** 才会拦截 LLM 请求；单纯 `return` 不会。
+所以在钩子里调用 `event.stop_event()` 才会拦截 LLM 请求，单纯 `return` 不会。
 `on_llm_tool_respond` 调用前会执行 `event.clear_result()`，即工具返回值不会自动当回复发出。
 
 ## on_llm_request 常用改法

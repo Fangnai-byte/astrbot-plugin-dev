@@ -5,10 +5,10 @@
 - 顶层导出（实测 `dir(astrbot.api)`）：`AstrBotConfig`、`FunctionTool`、`ToolSet`、`llm_tool`、
   `logger`、`html_renderer`、`BaseFunctionToolExecutor`。即 `from astrbot.api import FunctionTool`
   可用，且与 `astrbot.core.agent.tool.FunctionTool` 是同一个类。
-- 工具定义：`astrbot/core/agent/tool.py` → `class FunctionTool`，字段为
+- 工具定义在 `astrbot/core/agent/tool.py` 的 `class FunctionTool`，字段为
   `name`、`description`、`parameters`、`handler`、`handler_module_path`、`active`、`is_background_task`。
-- 工具管理：`astrbot/core/provider/func_tool_manager.py`，类名是 `FunctionToolManager`（不是 `FuncToolManager`）。
-- LLM 请求对象：`astrbot/core/provider/entities.py` 的 `ProviderRequest` / `LLMResponse`。
+- 工具管理在 `astrbot/core/provider/func_tool_manager.py`，类名是 `FunctionToolManager`（不是 `FuncToolManager`）。
+- LLM 请求对象在 `astrbot/core/provider/entities.py`，即 `ProviderRequest` / `LLMResponse`。
 
 ## 1) 注册 LLM 工具
 
@@ -53,7 +53,7 @@ data = await self.get_kv_data("key", None)
 await self.delete_kv_data("key")
 ```
 
-签名实测：`put_kv_data(self, key: str, value: int|float|str|bytes|bool|dict|list|None)`、
+签名实测是 `put_kv_data(self, key: str, value: int|float|str|bytes|bool|dict|list|None)`、
 `get_kv_data(self, key, default)`。值支持 dict/list 等，可直接存复杂结构。
 键建议拼上 `event.unified_msg_origin` 以避免多群串数据。
 
@@ -86,7 +86,7 @@ self.context.register_commands(star_name, command_name, desc, priority, awaitabl
 self.context.register_web_api(route, view_handler, methods, desc)
 ```
 
-渲染两个方法在 `Star` 上，不在 `Context` 上：`self.text_to_image(text, return_url=True)` 与
+渲染两个方法在 `Star` 上，不在 `Context` 上，分别是 `self.text_to_image(text, return_url=True)` 与
 `self.html_render(tmpl, data, return_url=True, options=None)`。写成 `self.context.text_to_image` 会 AttributeError。
 
 ## 6) i18n 与 Dashboard 页面

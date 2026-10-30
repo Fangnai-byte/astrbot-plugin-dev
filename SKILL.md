@@ -5,7 +5,7 @@ description: "Develop, modify, and review AstrBot plugins against the local Astr
 
 # AstrBot 插件开发（以本机源码为准）
 
-**本 Skill 的唯一依据是本机安装的 AstrBot 源码（4.28.0）。** 文中每个类名、字段名、函数签名
+本 Skill 的唯一依据是本机安装的 AstrBot 源码（4.28.0）。文中每个类名、字段名、函数签名
 都取自 `site-packages/astrbot/` 的实际代码。动笔前先用 `inspect.signature` / `getsource` 复核一遍，
 版本升级后旧写法会静默失效。
 
@@ -49,13 +49,13 @@ print([f for f in dir(Star) if not f.startswith('_')])
 
 ### 4. 挂事件钩子
 
-看 [references/hooks.md](references/hooks.md)：**每个钩子的实际参数个数**（例如 `on_plugin_error`
+看 [references/hooks.md](references/hooks.md)，重点是每个钩子的实际参数个数（例如 `on_plugin_error`
 在 `event` 之外还有 4 个参数，很容易写错）、如何用 `event.stop_event()` 拦截 LLM 请求。
 
 ### 5. 让 bot 在某种条件下回话（唤醒 / 配置档案）
 
 看 [references/awakening-and-config.md](references/awakening-and-config.md)：唤醒检查的 4 个条件、
-**自定义 filter 命中后必须自己置 `is_at_or_wake_command`（否则不进 LLM）**、
+自定义 filter 命中后必须自己置 `is_at_or_wake_command`（否则不进 LLM）、
 配置档案（`abconf_*.json` + `umop_config_routing`，多 bot 各用各的唤醒词靠它）、
 群聊上下文注入的 `[At: …]` / `⚠️[DIRECTED AT YOU]` 标记、平台实例上拿不到 `self_id`。
 
@@ -75,12 +75,12 @@ print([f for f in dir(Star) if not f.startswith('_')])
 | LLM 工具不被调用 | docstring 的 `Args:` 格式、参数类型是否在 string/number/object/array/boolean 内 |
 | 自定义 filter 命中了但 bot 不回 | 少了 `event.is_at_or_wake_command = True`（见 awakening-and-config.md 第一节） |
 | 一个唤醒词把所有 bot 都叫醒了 | 多个 bot 绑了同一份配置档案；按 `平台实例名:*:*` 分开绑，与插件无关 |
-| 报 `unable to open database file` | 未必是库坏了：可能是 TEMP 目录不可写导致临时文件建不出来，加 `pragma temp_store = memory` 并把库路径打进日志 |
+| 报 `unable to open database file` | 未必是库坏了，也可能是 TEMP 目录不可写导致临时文件建不出来。加 `pragma temp_store = memory` 并把库路径打进日志 |
 
 ## 自检
 
-1. 目录/文件齐全：`main.py`、`metadata.yaml`（版本、`astrbot_version`）、按需 `_conf_schema.json`、
+1. 目录和文件齐全。`main.py`、`metadata.yaml`（版本、`astrbot_version`）、按需 `_conf_schema.json`、
    `requirements.txt`、`logo.png`、`README.md`。
-2. 语法与导入：`python -m py_compile main.py`；再 import 一次确认无循环依赖。
+2. 语法与导入。`python -m py_compile main.py`，再 import 一次确认无循环依赖。
 3. 事件钩子参数个数逐个对照 [references/hooks.md](references/hooks.md)。
 4. 让插件真实加载后读日志确认无 traceback；有报错就按上表定位，不许含糊带过。

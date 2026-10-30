@@ -1,8 +1,8 @@
 # astrbot-plugin-dev
 
-AstrBot 插件开发参考 Skill（**以本机安装的 AstrBot 源码为唯一依据**，当前核对版本 **4.28.0**）。
+AstrBot 插件开发参考 Skill（以本机安装的 AstrBot 源码为唯一依据，当前核对版本 4.28.0）。
 
-写这个 Skill 的起因：网上流传的“AI 写插件知识库”普遍停留在旧版本，照抄会直接写出跑不起来的插件。
+写这个 Skill 的起因是网上的“AI 写插件知识库”普遍停在旧版本，照抄会直接写出跑不起来的插件。
 例如把 `FunctionTool` 写成在 `astrbot.api.provider` 且字段名为 `func`，而 4.28.0 实际在
 `astrbot.core.agent.tool`，字段为 `handler` / `handler_module_path` / `active` / `is_background_task`。
 本仓库里每个类名、字段名、函数签名都取自 `site-packages/astrbot/` 的实际代码，并逐条 `inspect`
@@ -43,9 +43,9 @@ references/
 
 ## 使用注意
 
-- **版本敏感**：本 Skill 核对的是 4.28.0。AstrBot 升级后请以线上源码为准，动笔前先
+- 版本敏感。本 Skill 核对的是 4.28.0。AstrBot 升级后请以线上源码为准，动笔前先
   `inspect.signature` / `getsource` 复核，旧写法会静默失效。
-- **不以第三方文档为准**：本仓库刻意不引用任何第三方教程，避免把过期写法带进来。
+- 不以第三方文档为准。本仓库刻意不引用任何第三方教程，避免把过期写法带进来。
 - 所有示例路径都用 `<AstrBot>` 占位，指 AstrBot 安装根目录，不绑定具体机器。
 
 ## 许可

@@ -20,7 +20,7 @@ data/plugins/my_plugin/
 
 ## metadata.yaml 字段
 
-`StarMetadata` 的 dataclass 字段：`name`、`author`、`desc`、`short_desc`、`version`、`repo`、
+`StarMetadata` 的 dataclass 字段是 `name`、`author`、`desc`、`short_desc`、`version`、`repo`、
 `display_name`、`support_platforms`、`astrbot_version`、`pages`、`i18n`、`logo_path`（后两个加载时填充）。
 
 ```yaml

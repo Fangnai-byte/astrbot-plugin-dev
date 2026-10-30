@@ -85,7 +85,7 @@ class MyPlugin(Star):
   `key='umop_config_routing'`，形如：
 
 ```json
-{"Mea:*:*": "3490368c-...", "绫地宁宁:*:*": "5f14a3ff-..."}
+{"bot-a:*:*": "3f2c9a18-...", "bot-b:*:*": "a71d4e55-..."}
 ```
 
 `*` 是通配（按 `[platform_id]:[message_type]:[session_id]` 三段匹配）。
@@ -167,7 +167,7 @@ conn.execute("pragma busy_timeout = 10000")   # 撞上别人的写事务先等�
 conn.execute("pragma temp_store = memory")    # 排序/去重不走临时文件
 ```
 
-原因在于 `unable to open database file` 这句话**既可能是库打不开，也可能是临时文件建不出来**
+原因在于 `unable to open database file` 这句话既可能是库打不开，也可能是临时文件建不出来
 （TEMP 指向不存在的目录、或目录不可写），两种原因同一个措辞，非常容易误判成「库坏了」。
 真出问题时把库路径写进日志，否则根本不知道是哪个 bot 的库。
 `logger.warning(f"[X] 检索失败（库={path}）: {e}")`。

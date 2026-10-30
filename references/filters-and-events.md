@@ -30,9 +30,9 @@ async def kick(self, event: AstrMessageEvent): ...
 @filter.permission_type(filter.PermissionType.ADMIN)
 ```
 
-签名实测：`filter.command(command_name=None, sub_command=None, alias: set | None = None, **kwargs)`，
+签名实测是 `filter.command(command_name=None, sub_command=None, alias: set | None = None, **kwargs)`，
 `filter.regex(regex, **kwargs)`，`filter.llm_tool(name=None, **kwargs)`。
-除 `desc` 被单独取作描述外，**其余 kwargs 会整体存进 `handler.extras_configs`**，
+除 `desc` 被单独取作描述外，其余 kwargs 会整体存进 `handler.extras_configs`，
 `priority` 就在里面（默认 0，数字越大越先执行，见 `core/star/star_handler.py` 的排序逻辑）。
 所以 `priority=1`、`desc="..."` 可以直接写在装饰器里。
 
@@ -59,18 +59,18 @@ async def kick(self, event: AstrMessageEvent): ...
 | `await event.send(chain)` | 立即发送一条消息 |
 | `event.set_extra(k, v)` / `get_extra(k, default)` | 事件内传参 |
 
-注意：`message_str` 与 `message_obj` 是 `AstrMessageEvent.__init__` 中赋的**实例属性**，不在类上，
+注意 `message_str` 与 `message_obj` 是 `AstrMessageEvent.__init__` 里赋的实例属性，不在类上，
 用 `hasattr(AstrMessageEvent, "message_str")` 会返回 False，须在实例（`event.`）上访问。
 
 `ResultContentType`（`astrbot/api/event/result_content_type.py` 附近）区分普通结果与 `STREAMING_RESULT`。
 
 ## 消息链组件
 
-`astrbot/api/message_components.py` 导出的组件：`Plain`、`Image`、`At`、`AtAll`、`Face`、`Record`、
+`astrbot/api/message_components.py` 导出的组件有 `Plain`、`Image`、`At`、`AtAll`、`Face`、`Record`、
 `Video`、`File`、`Forward`、`Node`、`Nodes`、`Reply`、`Poke`、`Json`、`Location`、`Music`、
 `Dice`、`RPS`、`Shake`、`Share`、`Contact`、`Unknown`
 （同模块还可见 `BaseMessageComponent`、`ComponentType`、`ComponentTypes`、`MediaResolver` 等基类/辅助名）。
-注意**没有 `TTS`**，旧文档常见此笔误。
+注意没有 `TTS`，旧文档常见此笔误。
 
 ```python
 yield event.chain_result([
@@ -81,7 +81,7 @@ yield event.chain_result([
 ```
 
 构造参数随版本变动，4.28.0 的 `Image` 工厂方法为 `fromBase64` / `fromBytes` / `fromFileSystem` /
-`fromIO` / `fromURL`（**没有 `fromLocalFile`**）。写之前用 `help(Image)` 或读源码确认。
+`fromIO` / `fromURL`，没有 `fromLocalFile`。写之前用 `help(Image)` 或读源码确认。
 
 ## 配置注入
 
