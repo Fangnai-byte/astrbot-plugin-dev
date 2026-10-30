@@ -16,6 +16,8 @@ references/
 ├── plugin-package.md             目录结构、metadata.yaml、_conf_schema.json、main.py 模板
 ├── filters-and-events.md         命令/正则/权限过滤、AstrMessageEvent 接口、消息链组件
 ├── hooks.md                      各事件钩子的实际参数个数与调用点
+├── awakening-and-config.md       唤醒检查四条件、自定义 filter（is_at_or_wake_command 的坑）、
+│                                 配置档案与 umop 路由、群聊上下文的注入标记、平台实例没有 self_id
 └── services.md                   LLM 工具、KV 存储、会话等待器、主动发消息、i18n、pages/logo
 ```
 
@@ -32,6 +34,8 @@ references/
 ## 覆盖范围
 
 - 命令与事件过滤器（`@filter.command` / `command_group` / `regex` / 权限与平台过滤）
+- 唤醒链路（`waking_check` 的四个条件、自定义 `CustomFilter`、`is_at_or_wake_command` 才能进 LLM）
+- 配置档案（`abconf_*.json` + `umop_config_routing`：多 bot 各用各的唤醒词，靠绑档案而不是改代码）
 - 事件钩子（`EventType` 全部成员、`call_event_hook` 的实参个数、`event.stop_event()` 拦截语义）
 - LLM 工具（`@filter.llm_tool` 的注册点与调用点、入参传递方式）
 - 打包与配置（`metadata.yaml`、`_conf_schema.json`、`logo.png`、i18n、`pages/`）

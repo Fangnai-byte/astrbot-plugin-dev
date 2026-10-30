@@ -52,7 +52,14 @@ print([f for f in dir(Star) if not f.startswith('_')])
 看 [references/hooks.md](references/hooks.md)：**每个钩子的实际参数个数**（例如 `on_plugin_error`
 在 `event` 之外还有 4 个参数，很容易写错）、如何用 `event.stop_event()` 拦截 LLM 请求。
 
-### 5. 用服务能力
+### 5. 让 bot 在某种条件下回话（唤醒 / 配置档案）
+
+看 [references/awakening-and-config.md](references/awakening-and-config.md)：唤醒检查的 4 个条件、
+**自定义 filter 命中后必须自己置 `is_at_or_wake_command`（否则不进 LLM）**、
+配置档案（`abconf_*.json` + `umop_config_routing`，多 bot 各用各的唤醒词靠它）、
+群聊上下文注入的 `[At: …]` / `⚠️[DIRECTED AT YOU]` 标记、平台实例上拿不到 `self_id`。
+
+### 6. 用服务能力
 
 看 [references/services.md](references/services.md)：LLM 工具、KV 存储、会话等待器、
 主动发消息、后台任务、i18n 与 `pages/`、`logo.png` 约定。
@@ -64,8 +71,11 @@ print([f for f in dir(Star) if not f.startswith('_')])
 | 插件不出现 | 目录下有没有 `main.py`（或与目录同名的 `.py`）、`metadata.yaml` 是否解析失败 |
 | 加载即报错 | 顶层 import 写错（如 `from astrbot.api.provider import FunctionTool`）、`_conf_schema.json` JSON 语法错 |
 | 命令无响应 | 处理器签名是否为 `(self, event)`；是否被 Dashboard 命令配置屏蔽；是否需要唤醒前缀 |
-| 钩子报 TypeError | 钩子参数个数与 `call_event_hook` 传参不一致，对照 hooks.md 表格 |
+| 钩子报 TypeError | 钩子参数个数与 `call_event_hook` 传参一致，对照 hooks.md 表格 |
 | LLM 工具不被调用 | docstring 的 `Args:` 格式、参数类型是否在 string/number/object/array/boolean 内 |
+| 自定义 filter 命中了但 bot 不回 | 少了 `event.is_at_or_wake_command = True`（见 awakening-and-config.md 第一节） |
+| 一个唤醒词把所有 bot 都叫醒了 | 多个 bot 绑了同一份配置档案；按 `平台实例名:*:*` 分开绑，与插件无关 |
+| 报 `unable to open database file` | 未必是库坏了：可能是 TEMP 目录不可写导致临时文件建不出来，加 `pragma temp_store = memory` 并把库路径打进日志 |
 
 ## 自检
 
