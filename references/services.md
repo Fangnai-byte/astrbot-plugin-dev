@@ -7,7 +7,7 @@
   可用，且与 `astrbot.core.agent.tool.FunctionTool` 是同一个类。
 - 工具定义：`astrbot/core/agent/tool.py` → `class FunctionTool`，字段为
   `name`、`description`、`parameters`、`handler`、`handler_module_path`、`active`、`is_background_task`。
-- 工具管理：`astrbot/core/provider/func_tool_manager.py`（`FuncToolManager`）。
+- 工具管理：`astrbot/core/provider/func_tool_manager.py`，类名是 `FunctionToolManager`（不是 `FuncToolManager`）。
 - LLM 请求对象：`astrbot/core/provider/entities.py` 的 `ProviderRequest` / `LLMResponse`。
 
 ## 1) 注册 LLM 工具
@@ -29,8 +29,9 @@ class MyPlugin(Star):
 
 - docstring 的 `Args:` 会被解析成工具参数描述，类型只支持 `string`/`number`/`object`/`array`/`boolean`。
 - 返回值是字符串时会回灌给 LLM 继续对话；返回 `None` 则不回灌。
-- 需要在代码里动态增删工具时用 `self.context.get_llm_tool_manager()` 取管理器再操作，
-  或直接构造 `FunctionTool(handler=..., handler_module_path=...)`（字段以实测为准）。
+- 需要在代码里动态增删工具时用 `self.context.get_llm_tool_manager()` 取 `FunctionToolManager` 再操作
+  （它上面是 `add_func` / `get_func` / `get_full_tool_set` 这些），
+  或直接构造 `FunctionTool(name=..., description=..., parameters=..., handler=..., handler_module_path=...)`。
 
 ## 2) 主动调用 LLM
 
@@ -62,9 +63,9 @@ await self.delete_kv_data("key")
 from astrbot.core.utils.session_waiter import session_waiter, SessionController
 ```
 
-在命令里 `@session_waiter(timeout=30)` 修饰一个接收 `(controller, event)` 的内部函数，
-用户下一条消息会进入该函数，超时走 `controller.stop()` 分支。装饰器参数与用法在
-`astrbot/core/utils/session_waiter.py` 中确认后再写。
+在命令里用 `@session_waiter(timeout=30, record_history_chains=False)` 修饰一个接收 `(controller, event)`
+的内部函数，用户下一条消息会进入该函数。`SessionController` 只有 `keep()`、`stop()`、`get_history_chains()`
+三个方法；超时走 `stop()` 那条分支。
 
 ## 5) 发消息与后台任务
 
@@ -73,9 +74,20 @@ await self.context.send_message(event.unified_msg_origin, MessageChain([Plain("�
 self.context.register_task(asyncio.create_task(coro), "每日推送")   # 签名: (task: Awaitable, desc: str)
 ```
 
-`Context` 其他实测接口：`get_platform_inst(platform_id)`、`get_db()`、
-`register_commands(star_name, command_name, desc, priority, awaitable, use_regex=False, ignore_prefix=False)`。
-Web API 注册（`register_web_api`）与 `text_to_image` / `html_render` 请以 `dir(Context)` 核对参数后使用。
+`Context` 其他实测签名：
+
+```python
+await self.context.send_message(umo, MessageChain([...]))        # (session, message_chain) -> bool
+self.context.register_task(task, desc)                            # (Awaitable, str)
+self.context.get_platform_inst(platform_id)                       # -> Platform | None
+self.context.get_db()                                             # -> 数据库对象
+self.context.register_commands(star_name, command_name, desc, priority, awaitable,
+                               use_regex=False, ignore_prefix=False)
+self.context.register_web_api(route, view_handler, methods, desc)
+```
+
+渲染两个方法在 `Star` 上，不在 `Context` 上：`self.text_to_image(text, return_url=True)` 与
+`self.html_render(tmpl, data, return_url=True, options=None)`。写成 `self.context.text_to_image` 会 AttributeError。
 
 ## 6) i18n 与 Dashboard 页面
 

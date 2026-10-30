@@ -112,7 +112,8 @@ class MyPlugin(Star):
 }
 ```
 
-常用 `type`：`bool`、`string`、`text`、`int`、`float`、`list`、`object`、`dict`。
+常用 `type`：`bool`、`string`、`text`、`int`、`float`、`list`、`object`，另有 `file` 与
+`template_list`。没有 `dict` 这个类型（想存键值对写 `object`），写成 `dict` 后端不会按对象校验。
 JSON 语法错误会导致配置整体失效，改完用 `python -m json.tool _conf_schema.json` 校验。
 
 ## 交付前自检
